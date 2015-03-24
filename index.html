@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Trisis3D</title>
+	<style>
+/*Only one site, CSS included in HTML*/
+canvas{
+	display: block;
+	margin: 0 auto;
+}
+	</style>
+</head>
+<body>
+	<canvas id="gl-canvas" width="500" height="500">
+Oops ... your browser doesn't support the HTML5 canvas element
+	</canvas>
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+attribute  vec4 vPosition;
+attribute  vec4 vColor;
+varying vec4 fColor;
+
+uniform mat4 rotation;
+
+void main() 
+{
+    fColor = vColor;
+    gl_Position = rotation * vPosition;
+} 
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+precision mediump float;
+   
+varying vec4 fColor;
+
+void
+main()
+{
+    gl_FragColor = fColor;
+}
+</script>
+
+<script src="Common/webgl-utils.js"></script>
+<script src="Common/initShaders.js"></script>
+<script src="Common/MV.js"></script>
+
+<script src="TRISIS.js"></script>
+</body>
+</html>

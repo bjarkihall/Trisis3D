@@ -303,6 +303,26 @@ function mult( u, v )
 
         return result;
     }
+    else if( !u.matrix && v.matrix ) {
+        if( u.length != v.length) {
+            throw  "mult(): vector and matrix are not the same length";
+        }
+
+        for ( var i = 0; i < u.length; ++i ) {
+            if ( u.length != v[i].length ) {
+                throw "mult(): vector and matrix rows are not the same length";
+            }
+        }
+
+        for( var i = 0; i < u.length; ++i) {
+            var sum = 0.0;
+            for( var k = 0; k < u.length; ++k) {
+                sum += u[k] * v[i][k];
+            }
+            result.push( sum );
+        }
+        return result;
+    }
     else {
         if ( u.length != v.length ) {
             throw "mult(): vectors are not the same dimension";

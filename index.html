@@ -12,43 +12,52 @@ canvas{
 	</style>
 </head>
 <body>
+
 	<canvas id="gl-canvas" width="512" height="512">
-Oops ... your browser doesn't support the HTML5 canvas element
+	Oops ... your browser doesn't support the HTML5 canvas element
 	</canvas>
 
+	<!-- TODO change these -->
+	<img id="texImage" src="gold_inside.jpg" hidden></img>
+	<img id="texImage1" src="flower07.jpg" hidden></img>
+	<img id="texImage2" src="pave7.jpg" hidden></img>
+	<img id="board" src="bathtile2.jpg" hidden></img>
+
 <script id="vertex-shader" type="x-shader/x-vertex">
-
 attribute  vec4 vPosition;
-attribute  vec4 vColor;
-varying vec4 fColor;
-
+attribute  vec2 vTexCoord;
+varying vec2 fTexCoord;
 uniform mat4 projection;
 uniform mat4 modelview;
 
 void main() 
 {
-	fColor = vColor;
+	fTexCoord = vTexCoord;
 	gl_Position = projection * modelview * vPosition;
-}
+} 
 </script>
 
 <script id="fragment-shader" type="x-shader/x-fragment">
-
 precision mediump float;
-
-varying vec4 fColor;
+varying vec2 fTexCoord;
+uniform sampler2D texture;
 
 void
 main()
 {
-	gl_FragColor = fColor;
+	gl_FragColor = texture2D( texture, fTexCoord );
 }
 </script>
 
-<script src="Common/webgl-utils.js"></script>
-<script src="Common/initShaders.js"></script>
-<script src="Common/MV.js"></script>
+<script src="./Common/webgl-utils.js"></script>
+<script src="./Common/initShaders.js"></script>
+<script src="./Common/MV.js"></script>
 
+<script src="Cube.js"></script>
+<script src="Triomino.js"></script>
+<script src="Board.js"></script>
+<script src="Container.js"></script>
 <script src="TRISIS.js"></script>
+
 </body>
 </html>

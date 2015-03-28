@@ -40,6 +40,8 @@ var boardHeight = 12;
 var dt = 1500;
 var lastTime = new Date().getTime();
 
+var score = 0;
+
 window.onload = function init(){
 	canvas = document.getElementById("gl-canvas");
 	
@@ -233,7 +235,7 @@ function render(){
 	gfx.ctm = mult(gfx.ctm, translate(-boardSize/2+0.5, -boardHeight/2+0.5, -boardSize/2+0.5));
 	container.render(gfx);
 	gfx.ctm = gfx.stack.pop();
-
+	
 	requestAnimFrame(render);
 }
 
@@ -262,6 +264,7 @@ function newGame(){
 	trio = new Triomino();
 	container = new Container();
 	lost = false;
+	resetScore();
 	game();
 }
 
@@ -270,6 +273,7 @@ function isPlaneFull(y){
 }
 
 function deletePlane(y){
+	updateScore();
 	container.height.splice(y,1);
 	container.height.push(new Array(boardSize));
 
@@ -325,4 +329,19 @@ function isCubeThere(cubepos){
 
 function isCubeBelow(cubepos){
 	return (container.hasCube(cubepos[0], cubepos[1]-1, cubepos[2]) || cubepos[1] === 0);
+}
+
+function updateScore(){
+	score += 1;
+	postScore();
+}
+
+function resetScore(){
+	score = 0;
+	postScore();
+}
+
+function postScore(){
+	var string = "Stig: " + score;
+	document.getElementById("stig").innerHTML = string;
 }

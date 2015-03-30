@@ -22,7 +22,7 @@ function handleKeyup(e) {
 	keys[e.keyCode] = false;
 
 	//SLOW DOWN
-	if(!keys[keyCode(' ')]) DELTA_TIME = 1500;
+	if(!keys[keyCode(' ')]) DELTA_TIME = SLOW;
 }
 
 function eatKey(keyCode) {
@@ -45,7 +45,7 @@ function customKeyHandler(){
 	x = y = z = 0;
 
 	//SPEED UP
-	if(keys[keyCode(' ')]) DELTA_TIME = 20;
+	if(keys[keyCode(' ')]) DELTA_TIME = FAST;
 	
 	//MOVE
 	if(keys[up])	z++;

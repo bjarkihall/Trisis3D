@@ -6,18 +6,17 @@
 	<style>
 /*Only one site, CSS included in HTML*/
 * {margin:0;padding:0;box-sizing:border-box;}
-body {font: 16px sans-serif; background: black;}
-canvas {display: block; margin: 0 auto;}
-#score {text-align: center;font-size: 4em;color: white;}
+html {height: 100%;}
+body {font: 16px sans-serif; background: black; width:  100%; height: 100%; overflow: hidden;}
+#gl-canvas {display: block; position: absolute; margin: auto; top: 0; right: 0; bottom: 0; left: 0; z-index: -1;}
+#score {text-align: center; font-size: 4em; color: white; background: black;}
 	</style>
 </head>
 <body>
-
-	<canvas id="gl-canvas" width="800" height="800">
+	<p id="score">Stig: 0</p>
+	<canvas id="gl-canvas">
 		Oops ... your browser doesn't support the HTML5 canvas element
 	</canvas>
-
-	<p id="score">Stig: 0</p>
 
 	<img id="texImage" src="minecraft_dirt.jpg" hidden></img>
 	<img id="texImage1" src="minecraft_emerald_ore.jpg" hidden></img>

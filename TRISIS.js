@@ -24,7 +24,7 @@ var canvas,
 
 	vPosition,
 	vTexCoord,
-	lost = false,
+	hasLost = false,
 
 	zDist = 10.0,
 	trio,
@@ -38,29 +38,44 @@ var canvas,
 	boardSize = 6,
 	boardHeight = 20,
 
-	DELTA_TIME = 1500,
+	FAST = 15;
+	SLOW = 1500;
+	DELTA_TIME = SLOW,
 	lastTime = new Date().getTime(),
 	score = 0;
 
 /*INITIALIZE*/
 window.onload = function init(){
-	canvas = document.getElementById("gl-canvas");
-	
+	//Setting up the canvas
+	canvas = document.getElementById('gl-canvas');
 	gl = WebGLUtils.setupWebGL(canvas);
 	if(!gl){ alert("WebGL isn't available"); }
 
-	gl.viewport(0, 0, canvas.width, canvas.height);
+	resizeCanvas();
+	window.addEventListener('resize', resizeCanvas);
+	function resizeCanvas() {
+		if(canvas.width  != window.innerWidth)
+			canvas.width  = window.innerWidth;
+		if(canvas.height != window.innerHeight)
+			canvas.height = window.innerHeight;
+		if(canvas.width>canvas.height) 
+			canvas.width = canvas.height;
+		else 
+			canvas.height = canvas.width;
+		gl.viewport(0, 0, canvas.width, canvas.height);
+	}
+
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
-	
 	gl.enable(gl.DEPTH_TEST);
 	gl.enable(gl.CULL_FACE);
 	gl.cullFace(gl.BACK);
 	
+	//Setting up the game
 	trio = new Triomino();
 	board = new Board();
 	container = new Container();
 
-	//  Load shaders and initialize attribute buffers
+	//Load shaders and initialize attribute buffers
 	program = initShaders(gl, "vertex-shader", "fragment-shader");
 	gl.useProgram(program);
 
@@ -72,15 +87,15 @@ window.onload = function init(){
 
 	proLoc = gl.getUniformLocation(program, "projection");
 	mvLoc = gl.getUniformLocation(program, "modelview"); 
-	var proj = perspective(110, 1.0, 0.2, 100.0);
+	var proj = perspective(100, 1.0, 0.2, 100.0);
 	gl.uniformMatrix4fv(proLoc, false, flatten(proj)); 
 
 	render();
 }
 
 function render(){
-	if(shouldUpdate() && !lost) game();
-	if(lost) newGame();
+	if(shouldUpdate() && !hasLost) game();
+	if(hasLost) newGame();
 
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	gfx.ctm = lookAt(vec3(0.0, 0.0, zDist), vec3(0.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0));
@@ -131,15 +146,14 @@ function game(){
 	else{
 		trio.getAllpos().forEach(function(cubepos){
 			if(cubepos[1] > boardHeight-1){
-				lost = true;
+				hasLost = true;
 				console.log("GAME OVER");
 				return;
 			};
 
 			container.setCube(cubepos[0],cubepos[1],cubepos[2]);
-			if(isPlaneFull(cubepos[1])){
+			if(isPlaneFull(cubepos[1]))
 				deletePlane(cubepos[1]);
-			}
 		});
 		trio = new Triomino();
 	}
@@ -148,7 +162,7 @@ function game(){
 function newGame(){
 	trio = new Triomino();
 	container = new Container();
-	lost = false;
+	hasLost = false;
 	resetScore();
 	game();
 }
@@ -165,9 +179,8 @@ function deletePlane(y){
 
 	for(var x = 0; x < boardSize; x++){
 		container.height[boardHeight-1][x] = new Array(boardSize);
-		for(var z = 0; z < boardSize; z++){
+		for(var z = 0; z < boardSize; z++)
 			container.deleteCube(x,y,z);
-		}
 	}
 	container.planecount[y] = 0;
 

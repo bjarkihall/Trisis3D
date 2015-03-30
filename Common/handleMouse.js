@@ -7,20 +7,20 @@ var g_mouseX = 0,
 	g_isMouseDown = false;
 
 function handleMouseMove(e){
-	//g_mouseX = e.clientX - canvas.offsetLeft + window.pageXOffset;
-	//g_mouseY = e.clientY - canvas.offsetTop;
+	//g_mouseX = e.clientX - canvas.clientLeft + window.pageXclient;
+	//g_mouseY = e.clientY - canvas.clientTop;
 	if(g_isMouseDown){
-		spinY = (spinY + (e.offsetX - origX)) % 360;
-		spinX = (spinX + (origY - e.offsetY)) % 360;
-		origX = e.offsetX;
-		origY = e.offsetY;
+		spinY = (spinY + (e.clientX - origX)) % 360;
+		spinX = (spinX + (origY - e.clientY)) % 360;
+		origX = e.clientX;
+		origY = e.clientY;
 	}
 }
 
 function handleMouseDown(e){
 	g_isMouseDown = true;
-	origX = e.offsetX;
-	origY = e.offsetY;
+	origX = e.clientX;
+	origY = e.clientY;
 	e.preventDefault();
 }
 

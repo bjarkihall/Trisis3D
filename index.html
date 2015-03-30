@@ -5,21 +5,20 @@
 	<title>Trisis3D</title>
 	<style>
 /*Only one site, CSS included in HTML*/
-canvas{
-	display: block;
-	margin: 0 auto;
-}
+* {margin:0;padding:0;box-sizing:border-box;}
+body {font: 16px sans-serif; background: black;}
+canvas {display: block; margin: 0 auto;}
+#score {text-align: center;font-size: 4em;color: white;}
 	</style>
 </head>
 <body>
 
 	<canvas id="gl-canvas" width="512" height="512">
-	Oops ... your browser doesn't support the HTML5 canvas element
+		Oops ... your browser doesn't support the HTML5 canvas element
 	</canvas>
 
-	<p id="stig">Stig: 0</p>
+	<p id="score">Stig: 0</p>
 
-	<!-- TODO change these -->
 	<img id="texImage" src="minecraft_dirt.jpg" hidden></img>
 	<img id="texImage1" src="minecraft_emerald_ore.jpg" hidden></img>
 	<img id="texImage2" src="minecraft_coal_ore.jpg" hidden></img>
@@ -54,6 +53,9 @@ main()
 <script src="./Common/webgl-utils.js"></script>
 <script src="./Common/initShaders.js"></script>
 <script src="./Common/MV.js"></script>
+
+<script src="./Common/keys.js"></script>
+<script src="./Common/handleMouse.js"></script>
 
 <script src="Cube.js"></script>
 <script src="Triomino.js"></script>

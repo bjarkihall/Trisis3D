@@ -1,49 +1,3 @@
-//TODO:
-/*
-* Snyrta aðeins til kóða
-* Breyta myndunum? Þ.e. fyrir betri contrast á kubb og bakgrunni.
-* Testing væri sniðugt, kanna villur og bæta uppsetninguna.
-* Eyða út hlutum sem ekki þjóna neinum tilgangi 
-  og breyta þeim sem gætu crashað leiknum eða valdið villu.
-* Laga game over lógík.
-* Eftir að allt er tilbúið kannski bæta við menu-divs, svo þetta virki meira eins og leikur.
-* Áttaviti svo maður viti eitthvað hvernig kassinn snýr m.v. stillingar á tökkum?
-* Skuggi á neðsta plani sem sýnir hvar kubbur mun lenda?
-* Game juice additions?
-*/
-
-/*GLOBALS*/
-var canvas,
-	gl,
-	program,
-
-	spinX = 0,
-	spinY = 0,
-	origX,
-	origY,
-
-	vPosition,
-	vTexCoord,
-	hasLost = false,
-
-	zDist = 10.0,
-	trio,
-	board,
-	container,
-	gfx = { stack: [] },
-
-	proLoc,
-	mvLoc,
-
-	boardSize = 6,
-	boardHeight = 20,
-
-	FAST = 15;
-	SLOW = 1500;
-	DELTA_TIME = SLOW,
-	lastTime = new Date().getTime(),
-	score = 0;
-
 /*INITIALIZE*/
 window.onload = function init(){
 	//Setting up the canvas
@@ -103,7 +57,7 @@ function render(){
 	gfx.ctm = mult(gfx.ctm, rotate(parseFloat(spinY), [0, 1, 0]));
 	
 	gfx.stack.push(gfx.ctm);
-	gfx.ctm = mult(gfx.ctm, translate(-boardSize/2+0.5, -boardHeight/2+0.5, -boardSize/2+0.5));
+	gfx.ctm = mult(gfx.ctm, translate(-boardSize/2, -boardHeight/2, -boardSize/2));
 	trio.render(gfx);
 	gfx.ctm = gfx.stack.pop();
 
@@ -113,14 +67,12 @@ function render(){
 	gfx.ctm = gfx.stack.pop();
 
 	gfx.stack.push(gfx.ctm);
-	gfx.ctm = mult(gfx.ctm, translate(-boardSize/2+0.5, -boardHeight/2+0.5, -boardSize/2+0.5));
+	gfx.ctm = mult(gfx.ctm, translate(-boardSize/2, -boardHeight/2, -boardSize/2));
 	container.render(gfx);
 	gfx.ctm = gfx.stack.pop();
 	
 	requestAnimFrame(render);
 }
-
-
 
 /*ADDITIONAL*/
 function scale4(x, y, z){
@@ -140,20 +92,19 @@ function scale4(x, y, z){
 
 /*GAME LOGIC*/
 function game(){
-	if(!shouldStop()){
+	if(!shouldStop()) 
 		trio.move(0,-1,0);
-	}
 	else{
-		trio.getAllpos().forEach(function(cubepos){
-			if(cubepos[1] > boardHeight-1){
+		trio.getAllpos().forEach(function(cubePos){
+			if(cubePos[1] > boardHeight - 1){
 				hasLost = true;
 				console.log("GAME OVER");
 				return;
 			};
 
-			container.setCube(cubepos[0],cubepos[1],cubepos[2]);
-			if(isPlaneFull(cubepos[1]))
-				deletePlane(cubepos[1]);
+			container.setCube(cubePos[0], cubePos[1], cubePos[2]);
+			if(isPlaneFull(cubePos[1]))
+				deletePlane(cubePos[1]);
 		});
 		trio = new Triomino();
 	}
@@ -169,27 +120,28 @@ function newGame(){
 
 /*CUBE DETECTION AND HANDLING*/
 function isPlaneFull(y){
-	return container.planecount[y] >= boardSize*boardSize;
+	return (container.planecount[y] >= boardSize*boardSize);
 }
 
 function deletePlane(y){
 	updateScore();
-	container.height.splice(y,1);
+	container.height.splice(y, 1);
 	container.height.push(new Array(boardSize));
 
 	for(var x = 0; x < boardSize; x++){
-		container.height[boardHeight-1][x] = new Array(boardSize);
+		container.height[boardHeight - 1][x] = new Array(boardSize);
 		for(var z = 0; z < boardSize; z++)
-			container.deleteCube(x,y,z);
+			container.deleteCube(x, y, z);
 	}
+
 	container.planecount[y] = 0;
 
 	for(var i in container.occupiedCoord){
 		cubeheight = container.occupiedCoord[i][1];
 		if(cubeheight > y){
 			container.planecount[cubeheight]--;
-			container.planecount[container.occupiedCoord[i][1]-1]++;
-			container.occupiedCoord[i] = subtract(container.occupiedCoord[i], [0,1,0]);
+			container.planecount[container.occupiedCoord[i][1] - 1]++;
+			container.occupiedCoord[i] = subtract(container.occupiedCoord[i], [0, 1, 0]);
 		}
 	}
 }
@@ -203,30 +155,30 @@ function shouldUpdate(){
 	return false;
 }
 
-function isLegal(){
-	return !(trio.getAllpos().some(isOutsideBorders) || trio.getAllpos().some(isCubeThere));
-}
-
 function shouldStop(){
 	return trio.getAllpos().some(isCubeBelow);
 }
 
-function isOutsideBorders(cubepos){
-	var x = cubepos[0];
-	var y = cubepos[1];
-	var z = cubepos[2];
+function isLegal(){
+	return !(trio.getAllpos().some(isOutsideBorders) || trio.getAllpos().some(isCubeThere));
+}
+
+function isOutsideBorders(cubePos){
+	var x = cubePos[0],
+		y = cubePos[1],
+		z = cubePos[2];
 	return (x >= boardSize || x < 0 || y < 0 || z >= boardSize || z < 0);
 }
 
-function isCubeThere(cubepos){
-	var x = cubepos[0];
-	var y = cubepos[1];
-	var z = cubepos[2];
+function isCubeThere(cubePos){
+	var x = cubePos[0],
+		y = cubePos[1],
+		z = cubePos[2];
 	return container.hasCube(x,y,z);
 }
 
-function isCubeBelow(cubepos){
-	return (container.hasCube(cubepos[0], cubepos[1]-1, cubepos[2]) || cubepos[1] === 0);
+function isCubeBelow(cubePos){
+	return (container.hasCube(cubePos[0], cubePos[1] - 1, cubePos[2]) || cubePos[1] === 0);
 }
 
 /*SCORING*/

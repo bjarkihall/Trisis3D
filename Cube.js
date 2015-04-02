@@ -1,5 +1,4 @@
 function Cube(image){
-	
 	this.numVertices = 36;
 	this.vpoints = [];
 	this.tpoints = [];
@@ -79,10 +78,6 @@ Cube.prototype.render = function(gfx){
 	gl.drawArrays(gl.TRIANGLES, 0, this.vpoints.length);
 	
 	gfx.ctm = gfx.stack.pop();
-};
-
-Cube.prototype.delete = function(){
-	console.log("deleted");
 };
 
 function configureTexture(image){

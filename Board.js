@@ -1,6 +1,6 @@
 function Board(){
 	
-	this.numVertices = 36; //boardSize*boardSize
+	this.numVertices = 36;
 	this.vpoints = [];
 	this.tpoints = [];
 
@@ -52,11 +52,8 @@ Board.prototype.init = function(){
 Board.prototype.quad = function(a,b,c,d, isFloor){
 	var indices = [ d, c, a, c, b, a];
 	var texind;
-	if(isFloor){
-		texind = [2,3,1,3,0,1];
-	}else{
-		texind = [5,6,4,6,0,4];
-	}
+	if(isFloor) texind = [2,3,1,3,0,1];
+	else texind = [5,6,4,6,0,4];
 	
 	for (var i in indices){
 		this.vpoints.push(this.vertices[indices[i]]);
@@ -90,7 +87,7 @@ Board.prototype.render = function(gfx){
 };
 
 function configureTexture(image){
-	texture = gl.createTexture();
+	var texture = gl.createTexture();
 	gl.bindTexture(gl.TEXTURE_2D, texture);
 	gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);

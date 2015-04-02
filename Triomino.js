@@ -7,26 +7,23 @@ function Triomino(type) {
 };
 
 Triomino.prototype.makeTriomino = function(){
-	var type = Math.random();
-	if(type < 0.5){
-		this.I_Triomino();
-	}else{
-		this.L_Triomino();
-	}
+	this.cubestack = [
+		new Cube(document.getElementById("texImage")), 
+		new Cube(document.getElementById("texImage1")), 
+		new Cube(document.getElementById("texImage2"))
+	];
+	if(Math.random() < 0.5) this.I_Triomino();
+	else this.L_Triomino();
 };
 
 Triomino.prototype.render = function(gfx){
 	gfx.stack.push(gfx.ctm);
-	gfx.ctm = mult(gfx.ctm, translate(this.xpos, this.ypos, this.zpos));
-
+	gfx.ctm = mult(gfx.ctm, translate(this.xpos+0.5, this.ypos+0.5, this.zpos+0.5));
 	gfx.ctm = mult(gfx.ctm, rotate(this.xdeg, [1,0,0]));
 	gfx.ctm = mult(gfx.ctm, rotate(this.ydeg, [0,1,0]));
 	gfx.ctm = mult(gfx.ctm, rotate(this.zdeg, [0,0,1]));
-
-	for(var cube in this.cubestack){
+	for(var cube in this.cubestack)
 		this.cubestack[cube].render(gfx);
-	}
-
 	gfx.ctm = gfx.stack.pop();
 };
 
@@ -43,32 +40,8 @@ Triomino.prototype.move = function(x,y,z){
 };
 
 Triomino.prototype.deleteCube = function(cube){
-	this.cubestack.splice(cube, 1); //Laga?
-	if(this.cubestack.length === 0){
-		console.log("EMPTY");
-	} 
-	// delete this.cubestack[cube]
+	this.cubestack.splice(cube, 1);
 };
-
-// TODO: fetch by id? fetch by abs pos?
-Triomino.prototype.getCubeRel = function(pos){
-	for(var cube in this.cubestack){
-		if(equal(this.cubestack[cube].getpos(),pos)){
-			return cube;
-		}
-	}
-	return false;
-};
-
-Triomino.prototype.getCubeAbs = function(pos){
-	var cubepos = this.getAllpos();
-	for(var cube in cubepos){
-		if(equal(cubepos[cube], pos)){
-			return cube;
-		}
-	}
-	return false;
-}
 
 Triomino.prototype.setpos = function(x,y,z){
 	this.xpos = x;
@@ -100,11 +73,8 @@ Triomino.prototype.getAllpos = function(){
 		reletivepos = mult(reletivepos, rotate(this.zdeg, [0,0,1]));
 		reletivepos = mult(this.cubestack[cube].getpos().concat(0), reletivepos);
 		reletivepos.splice(3,1);
-		
-		for(var i in reletivepos) {
+		for(var i in reletivepos)
 			reletivepos[i] = Math.round(reletivepos[i]);
-		}
-
 		var absolutepos = add(reletivepos, this.getpos());
 		res.push(absolutepos);
 	}
@@ -112,14 +82,12 @@ Triomino.prototype.getAllpos = function(){
 };
 
 Triomino.prototype.I_Triomino = function(){
-	this.cubestack = [new Cube(document.getElementById("texImage")), new Cube(document.getElementById("texImage1")), new Cube(document.getElementById("texImage2"))];
 	this.cubestack[0].setpos(0, 0, 0);
 	this.cubestack[1].setpos(0,-1, 0);
 	this.cubestack[2].setpos(0, 1, 0);
 };
 
 Triomino.prototype.L_Triomino = function(){
-	this.cubestack = [new Cube(document.getElementById("texImage")), new Cube(document.getElementById("texImage1")), new Cube(document.getElementById("texImage2"))];
 	this.cubestack[0].setpos(0, 0, 0);
 	this.cubestack[1].setpos(0, 1, 0);
 	this.cubestack[2].setpos(1, 0, 0);

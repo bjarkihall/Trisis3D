@@ -26,7 +26,7 @@ function Board(){
 	];
 
 	this.setpos(0,0,0);
-	this.image = document.getElementById("board");
+	this.image = document.getElementById("brick");
 
 	this.init();
 };

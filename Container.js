@@ -8,6 +8,15 @@ function Container(){
 			this.height[y][x] = new Array(boardSize);
 	}
 	this.occupiedCoord = [];
+	this.cubestack = [
+		new Cube(document.getElementById("sand")), 
+		new Cube(document.getElementById("dirt")), 
+		new Cube(document.getElementById("coal")), 
+		new Cube(document.getElementById("iron")), 
+		new Cube(document.getElementById("gold")), 
+		new Cube(document.getElementById("emerald")), 
+		new Cube(document.getElementById("diamond"))
+	];
 }
 
 Container.prototype.occupy = function(coords){
@@ -40,7 +49,7 @@ Container.prototype.deleteCube = function(x, y, z){
 
 Container.prototype.render = function(gfx){
 	gfx.stack.push(gfx.ctm);
-	var cube = new Cube(document.getElementById("texImage"));
+	//var cube = new Cube(document.getElementById("texImage"));
 	for(var i in this.occupiedCoord){
 		gfx.stack.push(gfx.ctm);
 		gfx.ctm = mult(
@@ -51,7 +60,7 @@ Container.prototype.render = function(gfx){
 				this.occupiedCoord[i][2]+0.5
 			)
 		);
-		cube.render(gfx);
+		this.cubestack[this.occupiedCoord[i][1]%7].render(gfx);
 		gfx.ctm = gfx.stack.pop();
 	}
 	gfx.ctm = gfx.stack.pop();

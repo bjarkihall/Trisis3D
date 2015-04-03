@@ -8,9 +8,9 @@ function Triomino(type) {
 
 Triomino.prototype.makeTriomino = function(){
 	this.cubestack = [
-		new Cube(document.getElementById("texImage")), 
-		new Cube(document.getElementById("texImage1")), 
-		new Cube(document.getElementById("texImage2"))
+		new Cube(document.getElementById("emerald")), 
+		new Cube(document.getElementById("dirt")), 
+		new Cube(document.getElementById("coal"))
 	];
 	if(Math.random() < 0.5) this.I_Triomino();
 	else this.L_Triomino();

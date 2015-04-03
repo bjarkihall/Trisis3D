@@ -111,9 +111,8 @@ function game(){
 		planesToDelete.sort().reverse();
 		planesToDelete.forEach(function(plane){
 			container.deletePlane(plane);
-		});
-		if(planesToDelete.length>0)
 			updateScore();
+		});
 		trio = new Triomino();
 	}
 }

@@ -39,10 +39,6 @@ Triomino.prototype.move = function(x,y,z){
 	this.zpos += z;
 };
 
-Triomino.prototype.deleteCube = function(cube){
-	this.cubestack.splice(cube, 1);
-};
-
 Triomino.prototype.setpos = function(x,y,z){
 	this.xpos = x;
 	this.ypos = y;

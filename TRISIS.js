@@ -41,7 +41,7 @@ window.onload = function init(){
 
 	proLoc = gl.getUniformLocation(program, "projection");
 	mvLoc = gl.getUniformLocation(program, "modelview"); 
-	var proj = perspective(100, 1.0, 0.2, 100.0);
+	var proj = perspective(120, 1.0, 0.2, 100.0);
 	gl.uniformMatrix4fv(proLoc, false, flatten(proj)); 
 
 	render();
@@ -74,7 +74,7 @@ function render(){
 	requestAnimFrame(render);
 }
 
-/*ADDITIONAL*/
+/*ADDITIONAL UTILS*/
 function scale4(x, y, z){
 	if(Array.isArray(x) && x.length == 3){
 		z = x[2];
@@ -95,6 +95,7 @@ function game(){
 	if(!shouldStop()) 
 		trio.move(0,-1,0);
 	else{
+		var planesToDelete = [];
 		trio.getAllpos().forEach(function(cubePos){
 			if(cubePos[1] > boardHeight - 1){
 				hasLost = true;
@@ -104,8 +105,15 @@ function game(){
 
 			container.setCube(cubePos[0], cubePos[1], cubePos[2]);
 			if(isPlaneFull(cubePos[1]))
-				deletePlane(cubePos[1]);
+				planesToDelete.push(cubePos[1]);
 		});
+
+		planesToDelete.sort().reverse();
+		planesToDelete.forEach(function(plane){
+			container.deletePlane(plane);
+		});
+		if(planesToDelete.length>0)
+			updateScore();
 		trio = new Triomino();
 	}
 }
@@ -121,29 +129,6 @@ function newGame(){
 /*CUBE DETECTION AND HANDLING*/
 function isPlaneFull(y){
 	return (container.planecount[y] >= boardSize*boardSize);
-}
-
-function deletePlane(y){
-	updateScore();
-	container.height.splice(y, 1);
-	container.height.push(new Array(boardSize));
-
-	for(var x = 0; x < boardSize; x++){
-		container.height[boardHeight - 1][x] = new Array(boardSize);
-		for(var z = 0; z < boardSize; z++)
-			container.deleteCube(x, y, z);
-	}
-
-	container.planecount[y] = 0;
-
-	for(var i in container.occupiedCoord){
-		cubeheight = container.occupiedCoord[i][1];
-		if(cubeheight > y){
-			container.planecount[cubeheight]--;
-			container.planecount[container.occupiedCoord[i][1] - 1]++;
-			container.occupiedCoord[i] = subtract(container.occupiedCoord[i], [0, 1, 0]);
-		}
-	}
 }
 
 function shouldUpdate(){
